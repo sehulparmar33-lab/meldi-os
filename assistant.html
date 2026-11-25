@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meldi AI - Smart Assistant</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:24px 20px;min-height:100vh;
+ background:radial-gradient(circle at top,#193e78,#070c20 75%);
+ color:white;font-family:Arial,sans-serif;text-align:center
+}
+header{display:flex;justify-content:space-between;color:#70dcff}
+h1{margin-top:55px;font-size:36px}
+p{color:#a8c6ed;line-height:1.7}
+.circle{
+ width:165px;height:165px;margin:40px auto;
+ border:3px solid #38caff;border-radius:50%;
+ display:grid;place-items:center;font-size:68px;
+ box-shadow:0 0 35px #087dff,0 0 65px #4c29b9;
+}
+button{
+ background:#172c59;color:white;border:1px solid #42caff;
+ border-radius:25px;padding:15px 20px;margin:8px;
+ font-size:16px
+}
+input{
+ width:100%;padding:16px;border-radius:25px;
+ background:#172747;color:white;border:1px solid #315a91;
+ font-size:16px;margin:15px 0
+}
+#answer{
+ background:#14264a;border:1px solid #315a91;
+ padding:20px;border-radius:20px;min-height:70px;
+ line-height:1.8;white-space:pre-line;margin-top:20px
+}
+</style>
+</head>
+<body>
+
+<header>
+<strong>◈ MELDI OS</strong>
+<span>🤖 SMART AI</span>
+</header>
+
+<h1>Meldi AI</h1>
+<p>તમારો પોતાનો ગુજરાતી Voice Assistant</p>
+
+<div class="circle" id="mic">🎙️</div>
+<p id="status">હું તમારી વાત સાંભળવા તૈયાર છું!</p>
+
+<button onclick="listen()">🎤 બોલો</button>
+
+<input id="question" placeholder="ગુજરાતીમાં પ્રશ્ન લખો">
+
+<button onclick="send()">મોકલો ➤</button>
+
+<div id="answer">નમસ્તે! હું Meldi AI છું.</div>
+
+<button onclick="speakAnswer()">🔊 જવાબ સાંભળો</button>
+<button onclick="location.href='index.html'">🏠 Home</button>
+
+<script>
+let lastAnswer="નમસ્તે! હું Meldi AI છું.";
+
+function reply(text){
+ let q=text.toLowerCase().trim();
+ let a="માફ કરશો, આ Command મને હજી આવડતી નથી.";
+
+if(q.includes("હેલો")||q.includes("નમસ્તે"))
+ a="નમસ્તે! હું તમારો Meldi AI Assistant છું.";
+
+else if(q.includes("સમય")||q.includes("વાગ્યા"))
+ a="હમણાં સમય છે "+new Date().toLocaleTimeString("gu-IN");
+
+else if(q.includes("તારીખ"))
+ a="આજની તારીખ છે "+new Date().toLocaleDateString("gu-IN");
+
+else if(q.includes("કોણ છો")||q.includes("નામ શું"))
+ a="હું Meldi AI છું. Meldi OS નો પોતાનો Voice Assistant.";
+
+else if(q.includes("કેમ છો"))
+ a="હું મજામાં છું! તમે કેમ છો?";
+
+else if(q.includes("મદદ"))
+ a="તમે મને સમય, તારીખ, મારું નામ, હોમ અને એપ્સ વિશે પૂછી શકો છો.";
+
+else if(q.includes("હોમ")||q.includes("home")){
+ a="હું તમારી Home Screen ખોલી રહ્યો છું.";
+ lastAnswer=a;
+ showAnswer(a);
+ speakAnswer();
+ setTimeout(()=>location.href="index.html",1500);
+ return;
+}
+
+else if(q.includes("એપ્સ")||q.includes("એપ બતાવો"))
+ a="Meldi OS ની 12 Apps:\nMeldi AI, Browser, Settings, Gallery, Files, Music, Camera, Calculator, Notes, Calendar, Clock અને Battery.";
+
+else if(q.includes("સેટિંગ"))
+ a="Settings App હજી Demo છે. આપણે તેને આગળના પાઠમાં બનાવીશું.";
+
+lastAnswer=a;
+showAnswer(a);
+}
+
+function showAnswer(a){
+ document.getElementById("answer").textContent=a;
+}
+
+function send(){
+ let q=document.getElementById("question").value.trim();
+ if(q)reply(q);
+}
+
+function speakAnswer(){
+ if(!window.speechSynthesis){
+  document.getElementById("status").textContent="Voice Output ઉપલબ્ધ નથી.";
+  return;
+ }
+ speechSynthesis.cancel();
+ let msg=new SpeechSynthesisUtterance(lastAnswer);
+ msg.lang="gu-IN";
+ speechSynthesis.speak(msg);
+}
+
+function listen(){
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+
+ if(!SR){
+  document.getElementById("status").textContent="Voice Recognition ઉપલબ્ધ નથી. લખીને પ્રયાસ કરો.";
+  return;
+ }
+
+ const r=new SR();
+ r.lang="gu-IN";
+ r.interimResults=false;
+
+ r.onstart=()=>{
+  document.getElementById("status").textContent="હું સાંભળી રહ્યો છું...";
+  document.getElementById("mic").textContent="🔴";
+ };
+
+ r.onresult=e=>{
+  let t=e.results[0][0].transcript;
+  document.getElementById("question").value=t;
+  document.getElementById("status").textContent="તમારો અવાજ મળી ગયો!";
+  reply(t);
+ };
+
+ r.onerror=()=>{
+  document.getElementById("status").textContent="ફરીથી પ્રયાસ કરો.";
+ };
+
+ r.onend=()=>{
+  document.getElementById("mic").textContent="🎙️";
+ };
+
+ r.start();
+}
+</script>
+</body>
+</html>

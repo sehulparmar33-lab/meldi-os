@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d20">
+<title>Meldi OS</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;padding:22px 18px;
+ font-family:Arial,sans-serif;color:white;
+ background:radial-gradient(circle at top,#193e78,#080d20 75%);
+}
+header{
+ display:flex;justify-content:space-between;
+ align-items:center;color:#75dcff;
+}
+.brand{font-size:20px;font-weight:bold}
+.clock{font-size:55px;margin-top:55px}
+.date{color:#a9c6eb;margin-top:10px}
+h1{font-size:35px;margin-top:55px}
+.search{
+ width:100%;padding:17px;border-radius:30px;
+ background:#172747;color:white;
+ border:1px solid #315a91;font-size:16px;
+ margin:15px 0 25px;outline:none;
+}
+.apps{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:22px 14px;text-align:center;
+}
+.app{cursor:pointer;min-width:0}
+.icon{
+ height:85px;border-radius:23px;
+ background:#172747;border:1px solid #315a91;
+ display:flex;align-items:center;justify-content:center;
+ font-size:36px;transition:.2s;
+}
+.app:active .icon{transform:scale(.92)}
+.app small{display:block;margin-top:9px;font-size:14px}
+button{
+ background:linear-gradient(110deg,#17447b,#24205c);
+ color:white;border:1px solid #3c8fd0;
+ padding:16px;border-radius:18px;
+ font-size:16px;cursor:pointer;
+}
+.mainbtn{width:100%;margin-top:28px}
+footer{
+ text-align:center;color:#65d9ff;
+ margin:55px 0 25px;
+}
+#drawer{display:none}
+#drawer.active{display:block}
+#home.hidden{display:none}
+.title{font-size:29px;margin-top:35px}
+.back{width:100%;margin-top:25px}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="brand">◈ MELDI OS</div>
+<div>● Wi-Fi　100%</div>
+</header>
+
+<section id="home">
+
+<div class="clock" id="clock">00:00</div>
+<div class="date" id="date"></div>
+
+<h1>Meldi OS</h1>
+<p style="color:#a9c6eb">તમારી પોતાની સ્માર્ટ સિસ્ટમમાં સ્વાગત છે!</p>
+
+<input class="search" id="homeSearch"
+placeholder="⌕ અહીં App શોધો..."
+oninput="searchApps()">
+
+<div class="apps" id="homeApps"></div>
+
+<button class="mainbtn" onclick="showDrawer()">
+☷　બધી Apps જુઓ
+</button>
+
+<footer>✦ WELCOME TO THE FUTURE ✦</footer>
+
+</section>
+
+<section id="drawer">
+
+<h2 class="title">All Applications</h2>
+<p style="color:#a9c6eb">તમારી Meldi OS Apps</p>
+
+<input class="search" id="appSearch"
+placeholder="⌕ App શોધો..."
+oninput="renderApps()">
+
+<div class="apps" id="allApps"></div>
+
+<button class="back" onclick="goHome()">
+← Home Screen
+</button>
+
+</section>
+
+<script>
+
+const apps=[
+["🤖","Meldi AI","assistant.html"],
+["🌐","Browser","demo"],
+["⚙️","Settings","settings.html"],
+["🖼️","Gallery","demo"],
+["📁","Files","demo"],
+["🎵","Music","demo"],
+["📷","Camera","demo"],
+["🧮","Calculator","demo"],
+["📝","Notes","demo"],
+["📅","Calendar","demo"],
+["⏰","Clock","demo"],
+["🔋","Battery","demo"]
+];
+
+function updateClock(){
+ const now=new Date();
+ document.getElementById("clock").textContent=
+ now.toLocaleTimeString("en-IN",{
+ hour:"2-digit",minute:"2-digit",hour12:true
+ });
+ document.getElementById("date").textContent=
+ now.toLocaleDateString("gu-IN",{
+ weekday:"long",day:"numeric",month:"long",year:"numeric"
+ });
+}
+updateClock();
+setInterval(updateClock,1000);
+
+function appCard(a){
+ return `<div class="app" onclick="openApp('${a[1]}')">
+ <div class="icon">${a[0]}</div>
+ <small>${a[1]}</small>
+ </div>`;
+}
+
+function renderHome(){
+ document.getElementById("homeApps").innerHTML=
+ apps.slice(0,6).map(appCard).join("");
+}
+
+function renderApps(){
+ const q=document.getElementById("appSearch").value.toLowerCase();
+ const filtered=apps.filter(a=>a[1].toLowerCase().includes(q));
+ document.getElementById("allApps").innerHTML=
+ filtered.length?filtered.map(appCard).join(""):
+ "<p>કોઈ App મળી નથી.</p>";
+}
+
+function showDrawer(){
+ document.getElementById("home").classList.add("hidden");
+ document.getElementById("drawer").classList.add("active");
+ document.getElementById("appSearch").value="";
+ renderApps();
+}
+
+function goHome(){
+ document.getElementById("drawer").classList.remove("active");
+ document.getElementById("home").classList.remove("hidden");
+ document.getElementById("homeSearch").value="";
+ renderHome();
+}
+
+function openApp(name){
+ const app=apps.find(a=>a[1]===name);
+ if(!app)return;
+
+ if(app[2]!=="demo"){
+  location.href=app[2];
+ }else{
+  alert(name+" App હજી Development માં છે!");
+ }
+}
+
+function searchApps(){
+ showDrawer();
+ document.getElementById("appSearch").value=
+ document.getElementById("homeSearch").value;
+ renderApps();
+}
+
+renderHome();
+
+</script>
+</body>
+</html>

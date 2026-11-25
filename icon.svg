@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="110" fill="#080d20"/>
+<circle cx="256" cy="256" r="175" fill="#142f60" stroke="#42caff" stroke-width="12"/>
+<path d="M256 105 L405 256 L256 407 L107 256 Z"
+fill="none" stroke="#60dcff" stroke-width="20"/>
+<text x="256" y="290" font-size="115" font-weight="bold"
+text-anchor="middle" fill="white">M</text>
+</svg>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meldi OS Settings</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:22px;
+ background:#080e20;color:white;
+ font-family:Arial,sans-serif;
+ transition:.3s;
+}
+header{
+ display:flex;justify-content:space-between;
+ align-items:center;color:#65d9ff;
+}
+h1{font-size:32px;margin-top:40px}
+.subtitle{color:#9db9df}
+.section{
+ margin-top:25px;padding:18px;
+ border:1px solid #31517c;
+ border-radius:20px;background:#142444;
+}
+.item{
+ display:flex;justify-content:space-between;
+ align-items:center;padding:16px 0;
+ border-bottom:1px solid #304566;
+ gap:12px;
+}
+.item:last-child{border:0}
+.info{display:flex;gap:12px;align-items:center}
+.icon{font-size:24px}
+small{display:block;color:#a5bad9;margin-top:5px}
+button,select{
+ background:#193963;color:white;
+ border:1px solid #4b91d1;
+ padding:11px 15px;border-radius:12px;
+}
+input[type=range]{width:100%}
+.switch{width:45px;height:25px;position:relative}
+.switch input{display:none}
+.track{
+ position:absolute;inset:0;background:#526078;
+ border-radius:30px;cursor:pointer;
+}
+.track:before{
+ content:"";position:absolute;width:19px;height:19px;
+ left:3px;top:3px;background:white;
+ border-radius:50%;transition:.2s;
+}
+.switch input:checked + .track{background:#168de0}
+.switch input:checked + .track:before{transform:translateX(20px)}
+.back{
+ display:block;width:100%;margin-top:25px;
+ padding:16px;font-size:16px;
+}
+.light{background:#eaf1fa;color:#14213c}
+.light .section{background:#fff;border-color:#c5d5e8}
+.light .subtitle,.light small{color:#526782}
+.light .item{border-color:#d8e1ed}
+.light button,.light select{background:#dbeaff;color:#10294a}
+#message{color:#63d8ff;text-align:center;margin-top:15px}
+</style>
+</head>
+<body>
+
+<header>
+<strong>◈ MELDI OS</strong>
+<span>⚙️ SETTINGS</span>
+</header>
+
+<h1>Settings</h1>
+<p class="subtitle">તમારી Meldi OS ને પોતાની રીતે ગોઠવો.</p>
+
+<div class="section">
+<h3>📶 Connectivity</h3>
+
+<div class="item">
+<div class="info"><span class="icon">📡</span>
+<div>Wi-Fi<small>Demo Control</small></div></div>
+<label class="switch">
+<input type="checkbox" id="wifi" checked>
+<span class="track"></span>
+</label>
+</div>
+
+<div class="item">
+<div class="info"><span class="icon">🔵</span>
+<div>Bluetooth<small>Demo Control</small></div></div>
+<label class="switch">
+<input type="checkbox" id="bluetooth">
+<span class="track"></span>
+</label>
+</div>
+</div>
+
+<div class="section">
+<h3>🎨 Display</h3>
+
+<div class="item">
+<div class="info"><span class="icon">🌙</span>
+<div>Dark Theme<small>Theme બદલો</small></div></div>
+<label class="switch">
+<input type="checkbox" id="theme" checked>
+<span class="track"></span>
+</label>
+</div>
+
+<div class="item">
+<div style="width:100%">
+<div class="info"><span class="icon">☀️</span>
+<div>Brightness<small id="brightValue">100%</small></div></div>
+<input type="range" id="brightness"
+min="50" max="120" value="100">
+</div>
+</div>
+</div>
+
+<div class="section">
+<h3>🌐 Language</h3>
+<div class="item">
+<div class="info"><span class="icon">🗣️</span>
+<div>System Language<small>ભાષા પસંદ કરો</small></div></div>
+<select id="language">
+<option value="ગુજરાતી">ગુજરાતી</option>
+<option value="English">English</option>
+<option value="हिन्दी">हिन्दी</option>
+</select>
+</div>
+</div>
+
+<div class="section">
+<h3>📱 About Meldi OS</h3>
+<div class="item">
+<div>System Name<small>Meldi OS</small></div>
+<strong>◈</strong>
+</div>
+<div class="item">
+<div>Version<small>Development Edition</small></div>
+<strong>1.0</strong>
+</div>
+<div class="item">
+<div>AI Assistant<small>Meldi AI</small></div>
+<strong>🤖</strong>
+</div>
+</div>
+
+<p id="message">Welcome to Meldi OS Settings!</p>
+
+<button class="back" onclick="location.href='index.html'">
+← Back to Home
+</button>
+
+<script>
+const $=id=>document.getElementById(id);
+
+function save(id,value){
+ localStorage.setItem("meldi_"+id,value);
+}
+
+function loadSwitch(id,defaultValue){
+ $(id).checked=localStorage.getItem("meldi_"+id)
+ ===null?defaultValue:localStorage.getItem("meldi_"+id)==="true";
+}
+
+loadSwitch("wifi",true);
+loadSwitch("bluetooth",false);
+loadSwitch("theme",true);
+
+["wifi","bluetooth"].forEach(id=>{
+ $(id).addEventListener("change",()=>{
+ save(id,$(id).checked);
+ $("message").textContent=
+ id+" Demo: "+($(id).checked?"ON":"OFF");
+ });
+});
+
+function applyTheme(){
+ document.body.classList.toggle("light",!$("theme").checked);
+ save("theme",$("theme").checked);
+}
+$("theme").addEventListener("change",applyTheme);
+applyTheme();
+
+let oldBrightness=localStorage.getItem("meldi_brightness");
+$("brightness").value=oldBrightness||100;
+
+function applyBrightness(){
+ let v=$("brightness").value;
+ $("brightValue").textContent=v+"%";
+ document.body.style.filter="brightness("+v+"%)";
+ save("brightness",v);
+}
+$("brightness").addEventListener("input",applyBrightness);
+applyBrightness();
+
+$("language").value=localStorage.getItem("meldi_language")||"ગુજરાતી";
+$("language").addEventListener("change",()=>{
+ save("language",$("language").value);
+ $("message").textContent="Language: "+$("language").value;
+});
+</script>
+</body>
+</html>
