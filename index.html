@@ -228,26 +228,6 @@ if("serviceWorker" in navigator){
 renderHome();
 </script>
 <script>
-let startY = 0;
-let startX = 0;
-
-document.addEventListener("touchstart", function(e) {
-  startY = e.touches[0].clientY;
-  startX = e.touches[0].clientX;
-}, {passive:true});
-
-document.addEventListener("touchend", function(e) {
-  const endY = e.changedTouches[0].clientY;
-  const endX = e.changedTouches[0].clientX;
-
-  const down = endY - startY;
-  const sideways = Math.abs(endX - startX);
-
-  if(startY < 150 && down > 80 && sideways < 70) {
-    window.location.href = "panel.html";
-  }
-}, {passive:true});
-</script>
 
 <div id="meldiOverlay">
 
@@ -282,6 +262,7 @@ document.addEventListener("touchend", function(e) {
 </button>
 
 </div>
+<script>
 let startY = 0;
 
 function openMeldiPanel(){
@@ -317,5 +298,6 @@ function updatePanelClock(){
 updatePanelClock();
 setInterval(updatePanelClock,1000);
 
+</script>
 </body>
 </html>
