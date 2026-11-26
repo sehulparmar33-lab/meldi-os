@@ -182,5 +182,21 @@ if("serviceWorker" in navigator){
 
 renderHome();
 </script>
+<script>
+let touchStart = 0;
+let touchEnd = 0;
+
+document.addEventListener("touchstart", function(e) {
+  touchStart = e.changedTouches[0].screenY;
+}, {passive:true});
+
+document.addEventListener("touchend", function(e) {
+  touchEnd = e.changedTouches[0].screenY;
+
+  if(touchStart < 80 && touchEnd - touchStart > 100) {
+    window.location.href = "panel.html";
+  }
+}, {passive:true});
+</script>
 </body>
 </html>
