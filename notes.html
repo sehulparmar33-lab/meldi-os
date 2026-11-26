@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meldi Notes</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:18px;
+ min-height:100vh;
+ background:linear-gradient(145deg,#071326,#142b50);
+ color:white;font-family:Arial,sans-serif;
+}
+.header{
+ display:flex;justify-content:space-between;
+ align-items:center;margin-bottom:20px;
+}
+h2{color:#55c8ff}
+button{
+ border:0;border-radius:10px;
+ padding:11px 15px;color:white;
+ background:#17618c;font-size:15px;
+}
+.back{background:#263e60}
+input,textarea{
+ width:100%;padding:14px;margin-bottom:12px;
+ border:1px solid #365477;border-radius:12px;
+ background:#091a31;color:white;font-size:16px;
+}
+textarea{height:150px;resize:vertical}
+.save{width:100%;background:#00a8a8;font-weight:bold}
+#notesList{margin-top:25px}
+.note{
+ background:#102642;padding:15px;
+ border-radius:14px;margin-bottom:12px;
+}
+.note h3{color:#55c8ff;margin:0 0 8px}
+.note p{white-space:pre-wrap;overflow-wrap:anywhere}
+.actions{display:flex;gap:8px}
+.delete{background:#a13c51}
+.edit{background:#17618c}
+small{color:#9bb6d4}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h2>📝 Meldi Notes</h2>
+<button class="back" onclick="location.href='index.html'">← Home</button>
+</div>
+
+<h3>નવી Note લખો</h3>
+
+<input id="noteTitle" placeholder="Note નું નામ લખો...">
+
+<textarea id="noteText" placeholder="અહીં તમારી Note લખો..."></textarea>
+
+<button class="save" onclick="saveNote()">💾 Save Note</button>
+<button style="margin-top:10px;background:#263e60" onclick="newNote()">＋ નવી Note</button>
+
+<h3>📚 મારી Notes</h3>
+<div id="notesList"></div>
+
+<script>
+let notes=JSON.parse(localStorage.getItem("meldiNotes")||"[]");
+let editingId=null;
+
+function saveData(){
+ localStorage.setItem("meldiNotes",JSON.stringify(notes));
+}
+
+function newNote(){
+ editingId=null;
+ document.getElementById("noteTitle").value="";
+ document.getElementById("noteText").value="";
+}
+
+function saveNote(){
+ const title=document.getElementById("noteTitle").value.trim();
+ const text=document.getElementById("noteText").value.trim();
+
+ if(!title && !text){
+  alert("કૃપા કરીને Note લખો!");
+  return;
+ }
+
+ if(editingId!==null){
+  const note=notes.find(n=>n.id===editingId);
+  if(note){
+   note.title=title||"Untitled";
+   note.text=text;
+  }
+ }else{
+  notes.unshift({
+   id:Date.now(),
+   title:title||"Untitled",
+   text:text
+  });
+ }
+
+ saveData();
+ newNote();
+ renderNotes();
+ alert("તમારી Note Save થઈ ગઈ!");
+}
+
+function editNote(id){
+ const note=notes.find(n=>n.id===id);
+ if(!note)return;
+
+ editingId=id;
+ document.getElementById("noteTitle").value=note.title;
+ document.getElementById("noteText").value=note.text;
+ window.scrollTo(0,0);
+}
+
+function deleteNote(id){
+ if(!confirm("આ Note Delete કરવી છે?"))return;
+
+ notes=notes.filter(n=>n.id!==id);
+ saveData();
+
+ if(editingId===id)newNote();
+ renderNotes();
+}
+
+function renderNotes(){
+ const list=document.getElementById("notesList");
+ list.replaceChildren();
+
+ if(notes.length===0){
+  list.textContent="હજુ કોઈ Note નથી. તમારી પહેલી Note લખો!";
+  return;
+ }
+
+ notes.forEach(note=>{
+  const card=document.createElement("div");
+  card.className="note";
+
+  const title=document.createElement("h3");
+  title.textContent=note.title;
+
+  const content=document.createElement("p");
+  content.textContent=note.text;
+
+  const actions=document.createElement("div");
+  actions.className="actions";
+
+  const edit=document.createElement("button");
+  edit.className="edit";
+  edit.textContent="✏️ Edit";
+  edit.onclick=()=>editNote(note.id);
+
+  const del=document.createElement("button");
+  del.className="delete";
+  del.textContent="🗑️ Delete";
+  del.onclick=()=>deleteNote(note.id);
+
+  actions.append(edit,del);
+  card.append(title,content,actions);
+  list.append(card);
+ });
+}
+
+renderNotes();
+</script>
+</body>
+</html>

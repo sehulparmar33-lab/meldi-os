@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meldi Calculator</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ min-height:100vh;
+ background:linear-gradient(145deg,#071326,#142b50);
+ color:white;
+ font-family:Arial,sans-serif;
+ padding:18px;
+}
+.header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:25px;
+}
+h2{color:#55c8ff}
+.back{
+ background:#263e60;
+ color:white;
+ border:0;
+ padding:10px 15px;
+ border-radius:10px;
+}
+.calculator{
+ max-width:420px;
+ margin:auto;
+}
+.display{
+ background:#091a31;
+ padding:22px;
+ border-radius:18px;
+ text-align:right;
+ margin-bottom:15px;
+ min-height:115px;
+}
+#expression{
+ color:#8ba9ca;
+ font-size:20px;
+ min-height:28px;
+ overflow-wrap:anywhere;
+}
+#result{
+ font-size:35px;
+ font-weight:bold;
+ margin-top:12px;
+ overflow-wrap:anywhere;
+}
+.keys{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+}
+button.key{
+ border:0;
+ border-radius:15px;
+ padding:20px 5px;
+ background:#203957;
+ color:white;
+ font-size:22px;
+ font-weight:bold;
+}
+button.key:active{background:#347bb0}
+.op{background:#17618c!important}
+.equal{
+ background:#00a8b9!important;
+ grid-column:span 2;
+}
+.clear{background:#a13c51!important}
+.history{
+ margin-top:25px;
+ background:#102642;
+ padding:15px;
+ border-radius:15px;
+}
+.history h3{margin-top:0}
+#historyList{
+ color:#c3d8ed;
+ font-size:14px;
+ line-height:2;
+}
+</style>
+</head>
+
+<body>
+<div class="header">
+<h2>🧮 Meldi Calculator</h2>
+<button class="back" onclick="location.href='index.html'">← Home</button>
+</div>
+
+<div class="calculator">
+<div class="display">
+<div id="expression">Meldi OS Calculator</div>
+<div id="result">0</div>
+</div>
+
+<div class="keys">
+<button class="key clear" onclick="clearAll()">AC</button>
+<button class="key op" onclick="backspace()">⌫</button>
+<button class="key op" onclick="add('%')">%</button>
+<button class="key op" onclick="add('/')">÷</button>
+
+<button class="key" onclick="add('7')">7</button>
+<button class="key" onclick="add('8')">8</button>
+<button class="key" onclick="add('9')">9</button>
+<button class="key op" onclick="add('*')">×</button>
+
+<button class="key" onclick="add('4')">4</button>
+<button class="key" onclick="add('5')">5</button>
+<button class="key" onclick="add('6')">6</button>
+<button class="key op" onclick="add('-')">−</button>
+
+<button class="key" onclick="add('1')">1</button>
+<button class="key" onclick="add('2')">2</button>
+<button class="key" onclick="add('3')">3</button>
+<button class="key op" onclick="add('+')">+</button>
+
+<button class="key" onclick="add('0')">0</button>
+<button class="key" onclick="add('.')">.</button>
+<button class="key equal" onclick="calculate()">=</button>
+</div>
+
+<div class="history">
+<h3>📜 Calculation History</h3>
+<div id="historyList">હજુ કોઈ ગણતરી નથી.</div>
+</div>
+</div>
+
+<script>
+let expression="";
+const result=document.getElementById("result");
+const display=document.getElementById("expression");
+
+function add(value){
+ expression+=value;
+ display.textContent=expression;
+ result.textContent=expression;
+}
+
+function clearAll(){
+ expression="";
+ display.textContent="Meldi OS Calculator";
+ result.textContent="0";
+}
+
+function backspace(){
+ expression=expression.slice(0,-1);
+ display.textContent=expression;
+ result.textContent=expression||"0";
+}
+
+function calculate(){
+ try{
+  if(!expression || !/^[0-9+\-*/%.() ]+$/.test(expression))
+   throw Error();
+
+  let exp=expression.replace(/(\d+(?:\.\d+)?)%/g,"($1/100)");
+
+  let answer=Function('"use strict";return ('+exp+')')();
+
+  if(!Number.isFinite(answer))throw Error();
+
+  answer=Number(answer.toPrecision(12));
+  result.textContent=answer;
+
+  const history=document.getElementById("historyList");
+  if(history.textContent==="હજુ કોઈ ગણતરી નથી.")
+   history.textContent="";
+
+  const item=document.createElement("div");
+  item.textContent=expression+" = "+answer;
+  history.prepend(item);
+
+  expression=String(answer);
+  display.textContent=expression;
+
+ }catch(e){
+  result.textContent="Error";
+ }
+}
+
+document.addEventListener("keydown",e=>{
+ if("0123456789+-*/.%".includes(e.key) && e.key.length===1)
+  add(e.key);
+ else if(e.key==="Enter")calculate();
+ else if(e.key==="Backspace")backspace();
+ else if(e.key==="Escape")clearAll();
+});
+</script>
+</body>
+</html>
