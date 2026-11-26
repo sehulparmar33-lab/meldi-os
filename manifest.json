@@ -1,0 +1,19 @@
+{
+  "name": "Meldi OS",
+  "short_name": "Meldi OS",
+  "description": "Meldi OS - Personal Web Operating System",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#101018",
+  "theme_color": "#101018",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
