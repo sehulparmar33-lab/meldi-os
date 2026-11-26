@@ -117,6 +117,7 @@ oninput="searchApps()">
 <button class="mainbtn" onclick="showDrawer()">☷ બધી Apps જુઓ</button><but	on class="mainbtn" onclick="location.href='panel.html'">
 🔔 Notification Panel<button class="mainbtn" onclick="location.href='panel
 </button>
+<button class="mainbtn" onclick="openMeldiPanel()">🔔 Notification Panel</button>
 
 <button id="installBtn" onclick="installApp()">📲 Install Meldi OS</button>
 
@@ -283,7 +284,7 @@ document.addEventListener("touchend",function(e){
 
  const panel=document.getElementById("meldiOverlay");
 
- if(!panel.classList.contains("show") && startY<150 && diff>80){
+ if(!panel.classList.contains("show") && startY<250 && diff>80){
    openMeldiPanel();
  }
  else if(panel.classList.contains("show") && diff < -80){
