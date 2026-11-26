@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d20">
+<title>Meldi OS Panel</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:25px 20px;
+ background:linear-gradient(145deg,#102c50,#080d20);
+ color:white;font-family:Arial,sans-serif;
+ min-height:100vh;
+}
+h1{font-size:32px;margin-bottom:5px}
+p{color:#a9c6eb}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:15px;margin-top:30px;
+}
+.tile{
+ padding:23px 12px;
+ border-radius:22px;
+ background:#1c385d;
+ border:1px solid #3d75a8;
+ text-align:center;
+ font-size:18px;
+}
+.tile span{font-size:28px;display:block;margin-bottom:10px}
+.tile.active{background:#1674bd}
+.slider{width:100%;margin:25px 0}
+button{
+ width:100%;padding:16px;
+ border:1px solid #438ccc;
+ border-radius:18px;
+ background:#173d69;color:white;
+ font-size:17px;margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<h1>◈ Meldi Panel</h1>
+<p>તમારી પોતાની Quick Settings</p>
+
+<div id="clock">00:00</div>
+
+<div class="grid">
+ <div class="tile active" onclick="toggle(this)">
+ <span>📶</span>Wi-Fi
+ </div>
+ <div class="tile" onclick="toggle(this)">
+ <span>🔵</span>Bluetooth
+ </div>
+ <div class="tile" onclick="toggle(this)">
+ <span>🔦</span>Flashlight
+ </div>
+ <div class="tile" onclick="toggle(this)">
+ <span>✈️</span>Airplane
+ </div>
+</div>
+
+<h3>☀️ Brightness</h3>
+<input class="slider" type="range" min="0" max="100" value="70">
+
+<button onclick="history.back()">← Back</button>
+
+<script>
+function toggle(el){
+ el.classList.toggle("active");
+}
+function updateClock(){
+ document.getElementById("clock").textContent=
+ new Date().toLocaleTimeString("en-IN");
+}
+updateClock();
+setInterval(updateClock,1000);
+</script>
+
+</body>
+</html>
