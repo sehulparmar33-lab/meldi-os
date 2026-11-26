@@ -48,6 +48,51 @@ button{
 .title{font-size:29px;margin-top:35px}
 .back{width:100%;margin-top:25px}
 footer{text-align:center;color:#65d9ff;margin:50px 0 25px}
+
+/* MELDI NOTIFICATION OVERLAY */
+#meldiOverlay{
+ position:fixed;
+ inset:0;
+ z-index:9999;
+ background:linear-gradient(145deg,#102c50,#080d20);
+ color:white;
+ padding:35px 22px;
+ display:none;
+ overflow-y:auto;
+}
+#meldiOverlay.show{
+ display:block;
+}
+#meldiOverlay h1{
+ font-size:32px;
+ margin-top:35px;
+}
+.meldi-tiles{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:14px;
+ margin-top:30px;
+}
+.meldi-tile{
+ padding:25px 10px;
+ border-radius:22px;
+ background:#1c385d;
+ border:1px solid #438ccc;
+ text-align:center;
+ font-size:18px;
+}
+.meldi-tile span{
+ display:block;
+ font-size:30px;
+ margin-bottom:10px;
+}
+.meldi-tile.active{
+ background:#1674bd;
+}
+.meldi-close{
+ width:100%;
+ margin-top:30px;
+}
 </style>
 </head>
 <body>
@@ -203,5 +248,74 @@ document.addEventListener("touchend", function(e) {
   }
 }, {passive:true});
 </script>
+
+<div id="meldiOverlay">
+
+<h1>◈ Meldi Panel</h1>
+<p>તમારી પોતાની Quick Settings</p>
+
+<div id="panelClock">00:00</div>
+
+<div class="meldi-tiles">
+ <div class="meldi-tile active" onclick="this.classList.toggle('active')">
+ <span>📶</span>Wi-Fi
+ </div>
+
+ <div class="meldi-tile" onclick="this.classList.toggle('active')">
+ <span>🔵</span>Bluetooth
+ </div>
+
+ <div class="meldi-tile" onclick="this.classList.toggle('active')">
+ <span>🔦</span>Flashlight
+ </div>
+
+ <div class="meldi-tile" onclick="this.classList.toggle('active')">
+ <span>✈️</span>Airplane
+ </div>
+</div>
+
+<h3>☀️ Brightness</h3>
+<input type="range" min="0" max="100" value="70" style="width:100%">
+
+<button class="meldi-close" onclick="closeMeldiPanel()">
+✕ Close Panel
+</button>
+
+</div>
+let startY = 0;
+
+function openMeldiPanel(){
+ document.getElementById("meldiOverlay").classList.add("show");
+}
+
+function closeMeldiPanel(){
+ document.getElementById("meldiOverlay").classList.remove("show");
+}
+
+document.addEventListener("touchstart",function(e){
+ startY=e.touches[0].clientY;
+},{passive:true});
+
+document.addEventListener("touchend",function(e){
+ const endY=e.changedTouches[0].clientY;
+ const diff=endY-startY;
+
+ const panel=document.getElementById("meldiOverlay");
+
+ if(!panel.classList.contains("show") && startY<150 && diff>80){
+   openMeldiPanel();
+ }
+ else if(panel.classList.contains("show") && diff < -80){
+   closeMeldiPanel();
+ }
+},{passive:true});
+
+function updatePanelClock(){
+ document.getElementById("panelClock").textContent=
+ new Date().toLocaleTimeString("en-IN");
+}
+updatePanelClock();
+setInterval(updatePanelClock,1000);
+
 </body>
 </html>
